@@ -80,7 +80,7 @@ function delete($time, $table = "note") {
 		return msg(4);
 	}
 	unset($table[$id]);
-	array_values($table); //重排索引
+	$table = array_values($table); //重排索引
 	if (save('note', json_encode($table, JSON_UNESCAPED_UNICODE)) === true) {
 		return msg(1);
 	} else {
@@ -218,7 +218,7 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 		<div class="tool">
 			<div class="tool-btn" id="note-add">添加</div>
 			<div class="tool-btn" id="note-del" title="显示删除按钮（刷新后恢复隐藏，防止误删除。）">删除</div>
-			<div class="tool-btn" id="setting" onclick='this.parentNode.style.display="initial"'>设置</div>
+			<div class="tool-btn" id="setting" onclick='document.getElementsByClassName("setting")[0].style.display="initial"'>设置</div>
 			<div class="tool-btn" id="logout">退出</div>
 		</div>
 		
