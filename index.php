@@ -346,7 +346,7 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 				post(window.location.href+"?page=setting", {
 					"sitename": sitename, "password": password
 				}, function(data) {
-					document.input[name="password"].value = "";
+					document.querySelector('input[name="password"]').value = ""
 					if (data === "ok") {
 						alert("设置修改成功");
 						location.reload();
