@@ -10,5 +10,4 @@
 
 默认密码：password
 
-![屏幕截图 2025-05-14 132715](https://github.com/user-attachments/assets/c92256fb-cacb-4572-8301-ea52c5d67db8)
-![屏幕截图 2025-05-14 132444](https://github.com/user-attachments/assets/3843700c-8dcb-45d5-be32-ada9e7b250fc)
+![image](https://github.com/user-attachments/assets/38ec8d61-0a12-4df8-a507-469cc900d2ed)
