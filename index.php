@@ -207,11 +207,11 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 		</div>
 		
 		<div class="add">
-			<div class="add-close">✕</div>
+			<div class="add-close" onclick='this.parentNode.style.display="none"'>✕</div>
 			<div class="add-time" style="display:none;"></div>
-			<input type="text" class="add-title" maxlength="35" onblur="if(this.value==='') this.value='未命名'" onfocus="if(this.value==='未命名') this.value=''" value="未命名">
+			<input type="text" name="add-title" class="add-title" maxlength="35" onblur="if(this.value==='') this.value='未命名'" onfocus="if(this.value==='未命名') this.value=''" value="未命名">
 			<div class="add-content" contenteditable="plaintext-only"></div>
-			<div class="btn" name="add-post">确定</div>
+			<div class="btn" onclick="into()">确定</div>
 		</div>
 		
 		<div class="setting">
@@ -299,7 +299,7 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 			function into() {
 				var timeout = 0;
 				const time = document.getElementsByClassName('add-time')[0].innerText;
-				const title = document.getElementsByClassName('add-title')[0].innerText;
+				const title = document.getElementsByName('add-title')[0].value;
 				const content = document.getElementsByClassName('add-content')[0].innerText;
 				if (title === "未命名" || title === "") return alert("没写标题");
 				if (content === "") return alert("没写内容");
@@ -319,12 +319,6 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 			document.getElementById('note-add').addEventListener('click', function() {
 				document.getElementsByClassName('add')[0].style.display = "initial";
 				document.getElementsByClassName('add-time')[0].innerText = Date.now();
-			});
-			document.getElementsByClassName('add-close')[0].addEventListener('click', function() {
-				document.getElementsByClassName('add')[0].style.display = "none";
-			});
-			document.getElementsByName('add-post')[0].addEventListener('click', function() {
-				into();
 			});
 			document.getElementById('note-del').addEventListener('click', function() {
 					const elements = document.getElementsByClassName('tip-close');
