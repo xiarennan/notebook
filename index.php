@@ -32,7 +32,6 @@ function save($table, $data) {
 	} else {
 		return true;
 	}
-
 }
 
 function conn($field) {
@@ -114,8 +113,7 @@ if ($page) {
 			exit("ok");
 		}
 		exit("密码不正确");
-	}
-	elseif ($page == 'logout') {
+	} elseif ($page == 'logout') {
 		unset($_SESSION['login']);
 		unset($_SESSION);
 		session_destroy();
@@ -130,11 +128,7 @@ if ($page) {
 			if($sitename) save("sitename",$sitename);
 			if($password) save("password",openssl_digest($password, "sm3", false));
 			exit("ok");
-		}
-		if ($page == 'noteget') {
-			exit(conn("note"));
-		}
-		if ($page == 'noteupdate') {
+		} else if ($page == 'noteupdate') {
 			$time = post("time");
 			$title = post("title");
 			$content = post("content");
@@ -143,8 +137,7 @@ if ($page) {
 				exit("ok");
 			}
 			exit($msg);
-		}
-		if ($page == 'notedelete') {
+		} else if ($page == 'notedelete') {
 			$time = get("time");
 			$msg = delete($time);
 			if ($msg === "ok") {
@@ -166,13 +159,9 @@ if ($page) {
 width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:left;padding:10px;color:#444;height:210px;overflow:auto;outline:0;white-space:pre-wrap;word-break:break-all}.add-content p{margin:3px 0}.tool{position:fixed;top:120px;left:calc(70% + 20px)}@media (max-width:768px){body{margin:20px 0 150px}.note{width:100%;margin:auto}.tool{top:initial;left:initial;bottom:50px;right:30px}}</style>
 	<script>
 		function get(url, callback) {
-			fetch(url, {
-				method: "GET",
-			})
+			fetch(url, {method: "GET",})
 			.then(response => response.text())
-			.then(data => {
-				callback(data);
-			});
+			.then(data => {callback(data);});
 		}
 
 		function post(url, data, callback) {
@@ -184,9 +173,7 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 				body: JSON.stringify(data),
 			})
 			.then(response => response.text())
-			.then(data => {
-				callback(data);
-			});
+			.then(data => {callback(data);});
 		}
 	</script>
 </head>
@@ -263,8 +250,8 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 				alert(data);
 			}
 			
-			var timeout = 0;
 			function noteInit() {
+				var timeout = 0;
 				var element_title = document.getElementsByClassName('tip-title');
 				Array.from(element_title).forEach(element => {
 					element.oninput = function() {
@@ -318,24 +305,20 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 			
 			//插入
 			function into() {
-				var timeout = 0;
 				const time = document.getElementsByClassName('add-time')[0].innerText;
 				const title = document.getElementsByName('add-title')[0].value;
 				const content = document.getElementsByClassName('add-content')[0].innerText;
 				if (title === "未命名" || title === "") return alert("没写标题");
 				if (content === "") return alert("没写内容");
-				clearTimeout(timeout);
-				timeout = setTimeout(function(){
-					post(window.location.href+"?page=noteupdate", {
-						"time": time, "title": title, "content": content
-					}, function(data) {
-						if (data === "ok") {
-							location.reload();
-						} else {
-							alert(data);
-						}
-					});
-				},500);
+				post(window.location.href+"?page=noteupdate", {
+					"time": time, "title": title, "content": content
+				}, function(data) {
+					if (data === "ok") {
+						location.reload();
+					} else {
+						alert(data);
+					}
+				});
 			}
 			
 			//点击添加按钮
