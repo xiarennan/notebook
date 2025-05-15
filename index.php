@@ -1,4 +1,5 @@
 <?php
+$start_time = microtime(true);
 /**
  ***************************************************************************
  * 原版UI：雪落 https://xueluo.cn/ 2022-08-09
@@ -13,6 +14,7 @@
 header('Content-Type: text/html; charset=utf-8');
 session_start();
 define('LOGIN', isset($_SESSION['login'])?$_SESSION['login']:0);
+
 function msg($data) {
 	$code = [1 => "ok",
 		2 => "数据库连接失败",
@@ -20,6 +22,7 @@ function msg($data) {
 		4 => "删除数据失败，ID 不存在"];
 	return $code[$data];
 }
+
 function save($table, $data) {
 	$fileContent = file_get_contents(__FILE__);
 	$fileContent = preg_replace('/\s\*\sdb-'.$table.':.*/', ' * '.'db-'.$table.':'.$data, $fileContent);
@@ -29,7 +32,9 @@ function save($table, $data) {
 	} else {
 		return true;
 	}
+
 }
+
 function conn($field) {
 	$file = file_get_contents(__FILE__);
 	if ($file) {
@@ -45,6 +50,7 @@ function conn($field) {
 		return msg(2);
 	}
 }
+
 function update($time, $title, $content, $table = "note") {
 	if (empty(conn($table))) {
 		$id = 0;
@@ -58,7 +64,7 @@ function update($time, $title, $content, $table = "note") {
 	$table[$id]["time"] = $time;
 	$table[$id]["title"] = $title;
 	$table[$id]["content"] = htmlspecialchars($content);
-	array_multisort(array_column($table,'time'), SORT_ASC, $table);
+	array_multisort(array_column($table,'time'), SORT_ASC, $table); //按 time 升序排列
 	$table = json_encode($table, JSON_UNESCAPED_UNICODE);
 	if (save('note', $table) === true) {
 		return msg(1);
@@ -66,6 +72,7 @@ function update($time, $title, $content, $table = "note") {
 		return msg(3);
 	}
 }
+
 function delete($time, $table = "note") {
 	$table = json_decode(conn($table), true);
 	$id = array_search($time, array_column($table, "time"));
@@ -73,19 +80,21 @@ function delete($time, $table = "note") {
 		return msg(4);
 	}
 	unset($table[$id]);
-	array_values($table);
+	array_values($table); //重排索引
 	if (save('note', json_encode($table, JSON_UNESCAPED_UNICODE)) === true) {
 		return msg(1);
 	} else {
 		return msg(3);
 	}
 }
+
 function get($key = false) {
 	if ($key === false) return $_GET;
 	$key = $_GET[$key];
 	if (empty($key)) $key = "";
 	return $key;
 }
+
 function post($key = false) {
 	if ($key === false) return $_POST;
 	$json = file_get_contents('php://input');
@@ -94,7 +103,9 @@ function post($key = false) {
 	if (empty($key)) $key = "";
 	return $key;
 }
+
 $page = get("page");
+
 if ($page) {
 	header('Content-Type: application/javascript; charset=utf-8');
 	if ($page == 'login') {
@@ -109,8 +120,7 @@ if ($page) {
 		unset($_SESSION);
 		session_destroy();
 		exit("ok");
-	}
-	else {
+	} else {
 		if (!LOGIN) {
 			exit("请登录");
 		}
@@ -156,9 +166,13 @@ if ($page) {
 width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:left;padding:10px;color:#444;height:210px;overflow:auto;outline:0;white-space:pre-wrap;word-break:break-all}.add-content p{margin:3px 0}.tool{position:fixed;top:120px;left:calc(70% + 20px)}@media (max-width:768px){body{margin:20px 0 150px}.note{width:100%;margin:auto}.tool{top:initial;left:initial;bottom:50px;right:30px}}</style>
 	<script>
 		function get(url, callback) {
-			fetch(url, {method: "GET",})
+			fetch(url, {
+				method: "GET",
+			})
 			.then(response => response.text())
-			.then(data => {callback(data);});
+			.then(data => {
+				callback(data);
+			});
 		}
 
 		function post(url, data, callback) {
@@ -170,7 +184,9 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 				body: JSON.stringify(data),
 			})
 			.then(response => response.text())
-			.then(data => {callback(data);});
+			.then(data => {
+				callback(data);
+			});
 		}
 	</script>
 </head>
@@ -202,7 +218,7 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 		<div class="tool">
 			<div class="tool-btn" id="note-add">添加</div>
 			<div class="tool-btn" id="note-del" title="显示删除按钮（刷新后恢复隐藏，防止误删除。）">删除</div>
-			<div class="tool-btn" id="setting">设置</div>
+			<div class="tool-btn" id="setting" onclick='this.parentNode.style.display="initial"'>设置</div>
 			<div class="tool-btn" id="logout">退出</div>
 		</div>
 		
@@ -216,7 +232,7 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 		
 		<div class="setting">
 			<div class="setting-title">设置</div>
-			<div class="setting-close">✕</div>
+			<div class="setting-close" onclick='this.parentNode.style.display="none"'>✕</div>
 			<div class="form">
 				<div class="key">网站标题</div>
 				<div class="value">
@@ -230,7 +246,7 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 				</div>
 			</div>
 			<div class="setting-msg"></div>
-			<div class="btn" name="setting-post">确定</div>
+			<div class="btn" onclick="setting()">确定</div>
 		</div>
 		<script>
 			var data = <?php if (empty(conn("note"))){echo "[]";}else{echo conn("note");}; ?>;
@@ -246,15 +262,16 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 			} else {
 				alert(data);
 			}
+			
 			var timeout = 0;
 			function noteInit() {
 				var element_title = document.getElementsByClassName('tip-title');
 				Array.from(element_title).forEach(element => {
 					element.oninput = function() {
-						var time = this.parentNode.getAttribute("data-time"); 
+						var time = this.parentNode.getAttribute("data-time");
 						var title = this.innerText;
 						var content = element.nextElementSibling.innerText;
-						clearTimeout(timeout);
+						clearTimeout(timeout); //两次输入时间小于500ms时 清除上一个延时器
 						timeout = setTimeout(function(){
 							post(window.location.href+"?page=noteupdate",{
 								"time": time, "title": title, "content": content
@@ -264,6 +281,7 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 				        },500);
 					}
 				});
+
 				var element_content = document.getElementsByClassName('tip-content');
 				Array.from(element_content).forEach(element => {
 					element.oninput = function() {
@@ -280,6 +298,7 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 						},500);
 					}
 				});
+
 				var element_close = document.getElementsByClassName('tip-close');
 				Array.from(element_close).forEach(element => {
 					element.addEventListener('click', function() {
@@ -296,6 +315,8 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 					});
 				});
 			}
+			
+			//插入
 			function into() {
 				var timeout = 0;
 				const time = document.getElementsByClassName('add-time')[0].innerText;
@@ -316,10 +337,14 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 					});
 				},500);
 			}
+			
+			//点击添加按钮
 			document.getElementById('note-add').addEventListener('click', function() {
 				document.getElementsByClassName('add')[0].style.display = "initial";
 				document.getElementsByClassName('add-time')[0].innerText = Date.now();
 			});
+			
+			//点击删除按钮
 			document.getElementById('note-del').addEventListener('click', function() {
 					const elements = document.getElementsByClassName('tip-close');
 					Array.from(elements).forEach(element => {
@@ -330,13 +355,9 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 						}
 					});
 			});
-			document.getElementById('setting').addEventListener('click', function() {
-				document.getElementsByClassName('setting')[0].style.display = "initial";
-			});
-			document.getElementsByClassName('setting-close')[0].addEventListener('click', function() {
-				document.getElementsByClassName('setting')[0].style.display = "none";
-			});
-			document.getElementsByName('setting-post')[0].addEventListener('click', function() {
+			
+			//点击设置的提交按钮
+			function setting() {
 				const sitename = document.getElementsByName('sitename')[0].value;
 				const password = document.getElementsByName('password')[0].value;
 				post(window.location.href+"?page=setting", {
@@ -350,7 +371,9 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 						alert(data);
 					}
 				});
-			});
+			}
+			
+			//点击退出按钮
 			document.getElementById('logout').addEventListener('click', function() {
 				get("?page=logout", function(data) {
 					if (data === "ok") {
@@ -360,6 +383,7 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 					}
 				});
 			});
+			
 			function FormatTime(t, date) {
 				var date = new Date(date);
 				var o = {
@@ -383,5 +407,6 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 			};
 		</script>
 		<?php } ?>
+		<!-- <?php echo (microtime(true) - $start_time) * 1000 . " ms";  ?> -->
 </body>
 </html>
