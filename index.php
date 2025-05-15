@@ -187,7 +187,7 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 		</div>
 		<script>
 			function login() {
-				password = document.getElementsByName('password')[0].value;
+				password = document.querySelector('input[type="password"]').value;
 				get("?page=login&password="+password, callback)
 				function callback(data) {
 					if (data === "ok") {
@@ -205,7 +205,7 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 		<div class="tool">
 			<div class="tool-btn" id="note-add">添加</div>
 			<div class="tool-btn" id="note-del" title="显示删除按钮（刷新后恢复隐藏，防止误删除。）">删除</div>
-			<div class="tool-btn" id="setting" onclick='document.getElementsByClassName("setting")[0].style.display="initial"'>设置</div>
+			<div class="tool-btn" id="setting" onclick='document.querySelector(".setting").style.display="initial"'>设置</div>
 			<div class="tool-btn" id="logout">退出</div>
 		</div>
 		
@@ -252,7 +252,7 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 			
 			function noteInit() {
 				var timeout = 0;
-				var element_title = document.getElementsByClassName('tip-title');
+				var element_title = document.querySelectorAll('.tip-title');
 				Array.from(element_title).forEach(element => {
 					element.oninput = function() {
 						var time = this.parentNode.getAttribute("data-time");
@@ -269,7 +269,7 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 					}
 				});
 
-				var element_content = document.getElementsByClassName('tip-content');
+				var element_content = document.querySelectorAll('.tip-content');
 				Array.from(element_content).forEach(element => {
 					element.oninput = function() {
 						var time = this.parentNode.getAttribute("data-time");
@@ -305,9 +305,9 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 			
 			//插入
 			function into() {
-				const time = document.getElementsByClassName('add-time')[0].innerText;
-				const title = document.getElementsByName('add-title')[0].value;
-				const content = document.getElementsByClassName('add-content')[0].innerText;
+				const time = document.querySelector('.add-time').innerText;
+				const title = document.querySelector('input[name="add-title"]').value;
+				const content = document.querySelector('.add-content').innerText;
 				if (title === "未命名" || title === "") return alert("没写标题");
 				if (content === "") return alert("没写内容");
 				post(window.location.href+"?page=noteupdate", {
@@ -323,13 +323,13 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 			
 			//点击添加按钮
 			document.getElementById('note-add').addEventListener('click', function() {
-				document.getElementsByClassName('add')[0].style.display = "initial";
-				document.getElementsByClassName('add-time')[0].innerText = Date.now();
+				document.querySelector('.add').style.display = "initial";
+				document.querySelector('.add-time').innerText = Date.now();
 			});
 			
 			//点击删除按钮
 			document.getElementById('note-del').addEventListener('click', function() {
-					const elements = document.getElementsByClassName('tip-close');
+					const elements = document.querySelectorAll('.tip-close');
 					Array.from(elements).forEach(element => {
 						if (window.getComputedStyle(element).getPropertyValue("visibility") === "hidden") {
 							element.style.visibility = "visible";
@@ -341,12 +341,12 @@ width:100%;border:none;border-bottom:1px solid #e1e1e1;}.add-content{text-align:
 			
 			//点击设置的提交按钮
 			function setting() {
-				const sitename = document.getElementsByName('sitename')[0].value;
-				const password = document.getElementsByName('password')[0].value;
+				const sitename = document.querySelector('input[name="sitename"]').value;
+				const password = document.querySelector('input[name="password"]').value;
 				post(window.location.href+"?page=setting", {
 					"sitename": sitename, "password": password
 				}, function(data) {
-					document.getElementsByName('password')[0].value = "";
+					document.input[name="password"].value = "";
 					if (data === "ok") {
 						alert("设置修改成功");
 						location.reload();
