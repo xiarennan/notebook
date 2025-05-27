@@ -88,18 +88,19 @@ function delete($time, $table = "note") {
 }
 
 function get($key = false) {
-	if ($key === false) return $_GET;
-	$key = $_GET[$key];
-	if (empty($key)) $key = "";
+	if (isset($_GET[$key]) and !empty($_GET[$key])) {
+	    $key = $_GET[$key];
+	} else {
+	    return false;
+	}
 	return $key;
 }
 
 function post($key = false) {
-	if ($key === false) return $_POST;
 	$json = file_get_contents('php://input');
 	$data = json_decode($json, true);
 	$key = $data[$key];
-	if (empty($key)) $key = "";
+	if (empty($key)) return false;
 	return $key;
 }
 
